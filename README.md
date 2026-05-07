@@ -1,74 +1,63 @@
-# Google Cloud Technologies 2026 - 1-Day Conference
+# Dress Code Compliance System (YOLOv8)
 
-A dynamic, single-page web application built to serve as an informational schedule for a 1-day technical conference focusing on Google Cloud Technologies.
+A real-time, computer vision-based web application designed to automatically enforce university dress code policies. Powered by a custom-trained YOLOv8 object detection model, this system actively scans live camera feeds to identify student attire and verifies compliance based on a strict, schedule-aware rule engine.
 
 ## Features
-- **Responsive UI:** A premium, dark-themed responsive design featuring Google Cloud's signature colors.
-- **Dynamic Content:** Loads talks and schedule data from a backend REST API.
-- **Real-time Search:** Effortlessly filter the schedule by talk title, category, or speaker's name.
-- **Micro-animations:** Smooth hover effects and transitions for an optimal user experience.
+
+- **Real-Time Object Detection**: Uses a custom-trained YOLOv8 model (`bestrobo.pt`) to detect 14 specific classes of clothing (e.g., `uniform_top`, `jeans`, `cropped_top`, `closed_shoes`).
+- **Schedule-Aware Rule Engine**: Automatically enforces different dress code rules depending on the day of the week:
+  - **Uniform Days (Mon, Tue, Thu)**: Strictly requires a `uniform_top`, `uniform_bottom`, and `closed_shoes`.
+  - **Civilian Days (Wed, Fri, Sat, Sun)**: Permits civilian attire like `tshirt` and `jeans`, while strictly flagging inappropriate clothing.
+- **Universal Violation Tracking**: Instantly flags universally prohibited items (e.g., `slippers`, `mini_skirt`, `ripped_jeans`) regardless of the day.
+- **Temporal Smoothing**: Implements a history buffer algorithm to eliminate UI flickering and prevent false positives from momentary model misclassifications.
+- **WebSocket Backpressure Control**: Features an asynchronous request-response video streaming loop, completely eliminating camera latency and lag.
 
 ## Tech Stack
-- **Backend:** Python + Flask Framework
-- **Frontend:** HTML5, modern CSS3 (Variables, Grid, Flexbox), Vanilla JavaScript (ES6+)
 
----
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Backend**: FastAPI, Uvicorn, Python
+- **AI/ML**: Ultralytics YOLOv8, OpenCV, NumPy
 
-## Getting Started
+## Setup & Installation
 
-### Prerequisites
-- Python 3.8+ 
+### 1. Backend Setup
+Navigate to the backend directory and install the necessary Python dependencies.
+```bash
+cd backend
+python -m venv venv
+# Activate the virtual environment
+# Windows:
+.\venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
 
-### Installation
-
-1. **Clone or Download the Repository:**
-   Ensure you have all the files (`app.py`, `requirements.txt`, `templates/index.html`, `static/style.css`, `static/script.js`).
-
-2. **Create a Virtual Environment (Optional but Recommended):**
-   ```bash
-   python -m venv venv
-   ```
-
-3. **Activate the Virtual Environment:**
-   - On Windows:
-     ```bash
-     .\venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
-
-4. **Install Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Running the Application
-
-1. From the root directory (where `app.py` is located), execute the following command:
-   ```bash
-   python app.py
-   ```
-2. The server will start on port `5000`. Open your web browser and navigate to:
-   [http://127.0.0.1:5000](http://127.0.0.1:5000)
-
----
-
-## Project Structure
-```
-/
-├── app.py                  # Main Flask application and server logic
-├── requirements.txt        # Python dependencies (Flask)
-├── README.md               # Project documentation
-├── templates/
-│   └── index.html          # Main application UI structure
-└── static/
-    ├── style.css           # Premium styling and design system
-    └── script.js           # Frontend logic (Search, Fetching Data, DOM manipulation)
+pip install -r requirements.txt
 ```
 
-## Making Changes
-- **Modifying the Schedule Data:** Open `app.py` and modify the `talks` or `speakers` dictionary data structures. The UI will automatically reflect the changes when you refresh the page.
-- **Changing Styles/Colors:** The `static/style.css` file uses native CSS variables at the top of the file under `:root`. By changing `--g-blue`, `--g-red`, `--bg-base`, etc., you can easily rebrand the entire application.
-- **Modifying Search Logic:** Check the `app.route("/api/schedule")` endpoint inside `app.py` for backend filtering. Frontend debouncing is handled within `static/script.js`.
+### 2. Frontend Setup
+Navigate to the frontend directory and install the Node modules.
+```bash
+cd frontend
+npm install
+```
+
+## How to Run
+
+To run the application, you need to start both the backend server and the frontend application simultaneously in two separate terminal windows.
+
+### Terminal 1: Start the Backend
+```bash
+cd backend
+.\venv\Scripts\activate
+python main.py
+```
+*(The backend will run on `http://localhost:8000`)*
+
+### Terminal 2: Start the Frontend
+```bash
+cd frontend
+npm run dev
+```
+*(The frontend will run on `http://localhost:3000`)*
+
+Once both servers are running smoothly, open your web browser and navigate to **[http://localhost:3000](http://localhost:3000)** to access the live scanner dashboard.
